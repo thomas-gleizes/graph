@@ -1,13 +1,32 @@
+import {
+  ColorRepresentation,
+  Float32BufferAttribute,
+  Mesh,
+  MeshBasicMaterial,
+  SphereGeometry,
+} from "three";
+
 class Point {
   private _x: number;
   private _y: number;
   private _z: number;
-  private _color: string;
+  private readonly _color: ColorRepresentation;
 
-  constructor(x: number, y: number, z: number) {
+  constructor(x: number, y: number, z: number, color: ColorRepresentation) {
     this._x = x;
     this._y = y;
     this._z = z;
+    this._color = color;
+  }
+
+  public getSphere(): Mesh {
+    const geometry = new SphereGeometry(0.5, 16, 16);
+
+    geometry.setAttribute("position", new Float32BufferAttribute([this._x, this._y, this._z], 3));
+
+    const material = new MeshBasicMaterial({ color: this._color });
+
+    return new Mesh(geometry, material);
   }
 
   get z(): number {
@@ -34,7 +53,7 @@ class Point {
     this._x = value;
   }
 
-  get color(): string {
+  get color(): ColorRepresentation {
     return this._color;
   }
 }

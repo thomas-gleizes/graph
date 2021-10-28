@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply m-0 bg-gradient-to-b from-white to-gray-800;
+    background: linear-gradient(to top, #858585, #fff);
+    margin: 0;
     height: 100vh;
 }
