@@ -1,25 +1,54 @@
-import { AxesHelper, Group, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import {
+  BufferGeometry,
+  Float32BufferAttribute,
+  MathUtils,
+  PerspectiveCamera,
+  Points,
+  PointsMaterial,
+  Scene,
+  TextureLoader,
+  WebGLRenderer,
+  VertexColors,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Graph from "./model/Graph";
 
 import "./style.css";
 
-const graph = new Graph(10);
+const COUNT = 1200;
+
 const scene = new Scene();
 const renderer = new WebGLRenderer({ antialias: true, alpha: true });
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight);
+const textureLoader = new TextureLoader();
 const controls = new OrbitControls(camera, renderer.domElement);
-const group = new Group();
+const geometry = new BufferGeometry();
 
 camera.position.x = 0.2;
 camera.position.y = 0.2;
 camera.position.z = 5;
 
-graph.addToGroup(group);
+const points = new Float32Array(COUNT * 3);
+const colors = new Float32Array(COUNT * 3);
 
-scene.add(camera);
-scene.add(group);
-scene.add(new AxesHelper(1));
+for (let i = 0; i < points.length; i++) {
+  points[i] = MathUtils.randFloatSpread(4);
+  colors[i] = Math.random() * 0.8 + 0.2;
+}
+geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
+
+scene.add(
+  new Points(
+    geometry,
+    new PointsMaterial({
+      size: 0.1,
+      vertexColors: VertexColors,
+      map: textureLoader.load("./circle.png"),
+      alphaTest: 0.01,
+      transparent: true,
+    })
+  )
+);
 
 renderer.setClearColor(0x000000, 0);
 renderer.setSize(window.innerWidth, window.innerHeight);
